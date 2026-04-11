@@ -1,0 +1,22 @@
+.custom-navbar{
+  left : 0;
+  right : 0;
+  position: fixed;
+  z-index: 1000;
+  //background: linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1)), url($background) !important;
+  border-bottom: 1px solid rgba(151, 151, 151, 0.3);
+  background: rgba(20, 20, 20, 0.8);
+}
+
+.custom-navbar-brand{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1rem;
+  margin-right: 1rem;
+  p{
+    margin-top : 1rem;
+    font-weight: bold;
+    margin-left : 0.2rem;
+  }
+}

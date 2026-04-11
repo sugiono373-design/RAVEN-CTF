@@ -1,0 +1,48 @@
+<!-- Terminal HTML -->
+<div id="cyber-terminal">
+  <div class="terminal-header">
+    <div class="terminal-dots">
+      <span class="terminal-dot red" id="terminal-dot-close" title="Close terminal"></span>
+      <span class="terminal-dot yellow"></span>
+      <span class="terminal-dot green"></span>
+    </div>
+    <span class="terminal-title">{{ Configs.ctf_name }} — secure shell</span>
+    <span class="terminal-shortcut-hint">Ctrl+` to toggle</span>
+  </div>
+
+  <div class="terminal-body" id="terminal-output"></div>
+
+  <div class="terminal-input-area" id="input-area" style="display: none;">
+    <span class="prompt-symbol" id="prompt-text">visitor@ctf:~$</span>
+    <input
+      type="text"
+      class="terminal-input"
+      id="terminal-input"
+      placeholder="type 'help' for commands..."
+      autocomplete="off"
+      spellcheck="false"
+    >
+  </div>
+</div>
+
+<!-- Toggle Button -->
+<button id="terminal-toggle-btn" title="Terminal (Ctrl+`)">
+  <i class="fas fa-terminal"></i>
+</button>
+
+<template id="terminal-config">{{ {
+  'ctfName': Configs.ctf_name,
+  'start': Configs.start,
+  'end': Configs.end,
+  'isAuthed': authed(),
+  'userName': User.name,
+  'userMode': Configs.user_mode,
+  'routes': {
+    'challenges': url_for('challenges.listing'),
+    'scoreboard': url_for('scoreboard.listing'),
+    'users': url_for('users.listing'),
+    'teams': url_for('teams.listing'),
+    'login': url_for('auth.login'),
+    'register': url_for('auth.register')
+  }
+} | tojson }}</template>

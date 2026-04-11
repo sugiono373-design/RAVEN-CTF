@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  {{ super() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="notifications-page">
+  
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 text-center">
+          <h1 class="display-5 fw-bold mb-2">
+            <i class="fas fa-bell text-primary me-2"></i>
+            {% trans %}Notifications{% endtrans %}
+          </h1>
+          <p class="lead mb-0 text-muted">
+            {% trans %}Stay updated with the latest announcements{% endtrans %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    {% if not notifications %}
+      
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-bell-slash"></i>
+        </div>
+        <h3>{% trans %}No notifications yet{% endtrans %}</h3>
+        <p>{% trans %}When there are announcements or updates, they will appear here.{% endtrans %}</p>
+      </div>
+    {% else %}
+      
+      <div class="notifications-list">
+        {% for notification in notifications %}
+          <div class="notification-card">
+            <div class="notification-indicator"></div>
+            <div class="notification-content">
+              <div class="notification-header">
+                <div class="notification-icon">
+                  <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="notification-title">{{ notification.title }}</h3>
+                <span class="notification-time">
+                  <i class="far fa-clock"></i>
+                  <span data-time="{{ notification.date | isoformat }}"></span>
+                </span>
+              </div>
+              <div class="notification-body">
+                {{ notification.html }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/notifications.js") }}
+{% endblock %}

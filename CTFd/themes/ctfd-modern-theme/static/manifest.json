@@ -1,0 +1,214 @@
+{
+  "_alpine-states-DaKmwbza.js": {
+    "file": "assets/alpine-states-DaKmwbza.js",
+    "name": "alpine-states"
+  },
+  "_clipboard-BVbEXFNN.js": {
+    "file": "assets/clipboard-BVbEXFNN.js",
+    "name": "clipboard",
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "_echarts-BhZoeAkw.js": {
+    "file": "assets/echarts-BhZoeAkw.js",
+    "name": "echarts"
+  },
+  "_index-3wjDI2iZ.js": {
+    "file": "assets/index-3wjDI2iZ.js",
+    "name": "index",
+    "imports": [
+      "assets/js/index.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "_userscore-FIT_QgKq.js": {
+    "file": "assets/userscore-FIT_QgKq.js",
+    "name": "userscore",
+    "imports": [
+      "assets/js/index.js",
+      "_index-3wjDI2iZ.js"
+    ]
+  },
+  "assets/img/logo.png": {
+    "file": "assets/logo-Cp4KCu6F.png",
+    "src": "assets/img/logo.png"
+  },
+  "assets/js/base_bootstrap.js": {
+    "file": "assets/base_bootstrap-BA0MpKMP.js",
+    "name": "base_bootstrap",
+    "src": "assets/js/base_bootstrap.js",
+    "isEntry": true
+  },
+  "assets/js/challenges.js": {
+    "file": "assets/challenges-Cwrexc_i.js",
+    "name": "challenges",
+    "src": "assets/js/challenges.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js"
+    ]
+  },
+  "assets/js/color_mode_switcher.js": {
+    "file": "assets/color_mode_switcher-D0G-GI5j.js",
+    "name": "color_mode_switcher",
+    "src": "assets/js/color_mode_switcher.js",
+    "isEntry": true
+  },
+  "assets/js/components/navbar.js": {
+    "file": "assets/navbar_component-n7FnRMwF.js",
+    "name": "navbar_component",
+    "src": "assets/js/components/navbar.js",
+    "isEntry": true
+  },
+  "assets/js/components/terminal.js": {
+    "file": "assets/terminal_component-GNl3bWVt.js",
+    "name": "terminal_component",
+    "src": "assets/js/components/terminal.js",
+    "isEntry": true
+  },
+  "assets/js/index.js": {
+    "file": "assets/index-CnmTgx-G.js",
+    "name": "index",
+    "src": "assets/js/index.js",
+    "isEntry": true
+  },
+  "assets/js/notifications.js": {
+    "file": "assets/notifications-BaoeE0mm.js",
+    "name": "notifications",
+    "src": "assets/js/notifications.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/page.js": {
+    "file": "assets/page-B5D3zFre.js",
+    "name": "page",
+    "src": "assets/js/page.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/scoreboard.js": {
+    "file": "assets/scoreboard-Ci3wKKOX.js",
+    "name": "scoreboard",
+    "src": "assets/js/scoreboard.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_index-3wjDI2iZ.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "assets/js/settings.js": {
+    "file": "assets/settings-Cbj9gv6D.js",
+    "name": "settings",
+    "src": "assets/js/settings.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_clipboard-BVbEXFNN.js"
+    ]
+  },
+  "assets/js/setup.js": {
+    "file": "assets/setup-DSH_ailY.js",
+    "name": "setup",
+    "src": "assets/js/setup.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/teams/list.js": {
+    "file": "assets/teams_list--CUDsHrf.js",
+    "name": "teams_list",
+    "src": "assets/js/teams/list.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js"
+    ]
+  },
+  "assets/js/teams/private.js": {
+    "file": "assets/teams_private-DXarV_HS.js",
+    "name": "teams_private",
+    "src": "assets/js/teams/private.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js",
+      "_clipboard-BVbEXFNN.js",
+      "_userscore-FIT_QgKq.js",
+      "_index-3wjDI2iZ.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "assets/js/teams/public.js": {
+    "file": "assets/teams_public-YnOfHQ2A.js",
+    "name": "teams_public",
+    "src": "assets/js/teams/public.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js",
+      "_userscore-FIT_QgKq.js",
+      "_index-3wjDI2iZ.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "assets/js/theme/preload.js": {
+    "file": "assets/theme_preload-dRJcGEWz.js",
+    "name": "theme_preload",
+    "src": "assets/js/theme/preload.js",
+    "isEntry": true
+  },
+  "assets/js/users/list.js": {
+    "file": "assets/users_list--CUDsHrf.js",
+    "name": "users_list",
+    "src": "assets/js/users/list.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js"
+    ]
+  },
+  "assets/js/users/private.js": {
+    "file": "assets/users_private-Br0hCerL.js",
+    "name": "users_private",
+    "src": "assets/js/users/private.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js",
+      "_userscore-FIT_QgKq.js",
+      "_index-3wjDI2iZ.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "assets/js/users/public.js": {
+    "file": "assets/users_public-BWtxLxa7.js",
+    "name": "users_public",
+    "src": "assets/js/users/public.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_alpine-states-DaKmwbza.js",
+      "_userscore-FIT_QgKq.js",
+      "_index-3wjDI2iZ.js",
+      "_echarts-BhZoeAkw.js"
+    ]
+  },
+  "assets/scss/main.scss": {
+    "file": "assets/main-DmeTD2Ua.css",
+    "src": "assets/scss/main.scss",
+    "isEntry": true
+  },
+  "assets/scss/template_runtime_styles.scss": {
+    "file": "assets/template_runtime_styles-R5RmlH44.css",
+    "src": "assets/scss/template_runtime_styles.scss",
+    "isEntry": true
+  }
+}

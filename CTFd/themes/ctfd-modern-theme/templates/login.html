@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  {{ super() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+  
+  <div class="login-branding">
+    <div class="branding-content">
+      
+      <div class="brand-logo">
+        <img src="{{ url_for('views.themes', path='img/logo.png') }}" alt="Logo" style="width: 50%; height: 50%; object-fit: contain;">
+      </div>
+      
+      
+      <h1 class="brand-title">
+        {% trans %}A few more clicks to{% endtrans %}<br>{% trans %}sign in to your account.{% endtrans %}
+      </h1>
+      
+      <p class="brand-subtitle">
+        {% trans %}Work smarter, not harder.{% endtrans %}
+      </p>
+    </div>
+    
+    
+    <div class="brand-wave"></div>
+  </div>
+  
+  
+  <div class="login-form-section">
+    <div class="login-form-container">
+      <h2 class="form-title">{% trans %}Sign In{% endtrans %}</h2>
+      
+      {% include "components/errors.html" %}
+      
+      {% if integrations.mlc() %}
+        <a class="oauth-btn" href="{{ url_for('auth.oauth_login') }}">
+          <i class="fas fa-shield-alt"></i>
+          {% trans %}Login with Major League Cyber{% endtrans %}
+        </a>
+        <div class="divider">
+          <span>{% trans %}or{% endtrans %}</span>
+        </div>
+      {% endif %}
+      
+      {% with form = Forms.auth.LoginForm() %}
+        <form method="post" accept-charset="utf-8" autocomplete="off" class="login-form">
+          <div class="form-group">
+            <input 
+              type="text" 
+              name="name" 
+              class="form-input" 
+              placeholder="{% trans %}Username or Email{% endtrans %}"
+              value="{{ name or '' }}"
+              required
+            >
+          </div>
+          
+          <div class="form-group">
+            <input 
+              type="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="{% trans %}Password{% endtrans %}"
+              required
+            >
+          </div>
+          
+          <a href="{{ url_for('auth.reset_password') }}" class="forgot-link">
+            {% trans %}Forgot your password?{% endtrans %}
+          </a>
+          
+          <div class="form-buttons">
+            <button type="submit" class="btn-login">
+              {% trans %}Login{% endtrans %}
+            </button>
+            <a href="{{ url_for('auth.register') }}" class="btn-register">
+              <i class="fas fa-user-plus"></i>
+              {% trans %}Register{% endtrans %}
+            </a>
+          </div>
+          
+          {{ form.nonce() }}
+        </form>
+      {% endwith %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+ .custom-challenges-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; 
+  max-width: 90vw; 
+  //padding: 0 2rem; 
+  //justify-content: center; 
+  width: fit-content; 
+  margin: 0 auto; 
+  padding : 2rem;
+}
+
+.custom-category-challenge-box {
+  background-color: rgba(24, 25, 29, 0.9);
+  border-radius: 0.2rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width : 80vw;
+  @media only screen and (max-width: 784px) {
+    flex-direction: column;
+  }
+}
+
+.custom-category-header {
+  margin-top: 2rem;
+  margin-right: 1rem;
+  font-weight: 1000;
+  width: 10rem;
+  align-self: flex-start; 
+  @media only screen and (max-width: 784px) {
+    align-self: center; 
+    justify-content: center; 
+    margin-right: 0;
+  }
+}
+
+.custom-category-challenge-button {
+  width: 12rem;
+
+  @media only screen and (max-width: 784px) {
+    width: 40vw;
+  }
+}
+
+.custom-category-challenge-button-icon{
+  margin-top : 0.2rem;
+}
+
+.custom-category-challenges {
+  align-self: flex-start;
+  @media only screen and (max-width: 784px) {
+    align-self: center;
+  }
+}
+
+.custom-category-vl {
+  border-left: 2px solid white;
+  margin: 0 2rem;
+  align-self: stretch; /* This stretches vertically in a row flex container */
+  width: 0;
+  flex-shrink: 0;
+  @media only screen and (max-width: 784px) {
+    content-visibility: hidden;
+  }
+  opacity: 1;
+}
+
+.custom-category-hr {
+  margin: 0;
+  border: none;
+  border-top: 2px solid white;
+  opacity: 0;
+}
+
+.custom-challenges-row {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(5, minmax(0, 2fr));
+  
+  @media only screen and (min-width : 1300px ) and (max-width: 1650px) {
+    grid-template-columns: repeat(4, minmax(0, 2fr));
+  }
+  @media only screen and (min-width : 1000px) and (max-width : 1300px ) {
+    grid-template-columns: repeat(3, minmax(0, 2fr));
+  }
+  @media only screen and (min-width :  784px) and (max-width : 1000px ) {
+    grid-template-columns: repeat(2, minmax(0, 2fr));
+  }
+  @media only screen and (max-width: 784px) {
+    grid-template-columns: repeat(1, minmax(0, 2fr));
+  }
+}
+
+.custom-challenge-button-text{
+  text-wrap: auto;
+  height: 3rem;
+  align-content: center;
+
+}

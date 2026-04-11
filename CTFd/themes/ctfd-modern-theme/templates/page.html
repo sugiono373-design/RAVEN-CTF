@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  {{ super() }}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<!-- Landing Page Content -->
+<div id="landing-page">
+  <div class="landing-content">
+    <div class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-badge" id="hero-badge">
+          <span class="pulse-dot"></span>
+          <span id="status-badge-text">Initializing</span>
+        </div>
+
+        <h1 class="hero-title" id="hero-title">
+          <span id="type-welcome"></span><br>
+          <span class="text-accent" id="type-ctfname"></span><span class="typing-cursor hidden" id="typing-cursor">_</span>
+        </h1>
+
+        <p class="hero-subtitle" id="hero-subtitle"></p>
+
+        <!-- Timer / Status -->
+        <div id="countdown-area" class="fade-in-element"></div>
+
+        <!-- CTA Buttons -->
+        <div class="cta-group fade-in-element" id="cta-buttons">
+          {% if authed() %}
+            <a href="{{ url_for('challenges.listing') }}" class="cta-primary">
+              <i class="fas fa-flag"></i> Enter Challenges
+            </a>
+            <a href="{{ url_for('scoreboard.listing') }}" class="cta-secondary">
+              <i class="fas fa-trophy"></i> Scoreboard
+            </a>
+          {% else %}
+            {% if registration_visible() %}
+              <a href="{{ url_for('auth.register') }}" class="cta-primary">
+                <i class="fas fa-user-plus"></i> Register Now
+              </a>
+            {% endif %}
+            <a href="{{ url_for('auth.login') }}" class="cta-secondary">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<template id="landing-config">{{ {
+  'start': Configs.start,
+  'end': Configs.end,
+  'ctfName': Configs.ctf_name,
+  'subtitle': (content if content else '')
+} | tojson }}</template>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/page.js") }}
+{% endblock %}

@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  {{ super() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 text-center">
+          <h1 class="display-5 fw-bold mb-2">
+            <i class="fas fa-flag text-primary me-2"></i>
+            {% trans %}Challenges{% endtrans %}
+          </h1>
+          <p class="lead mb-0 text-muted">
+            {% trans %}Test your skills and solve challenging problems{% endtrans %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid px-4 py-3">
+    
+    <div class="row mb-3">
+      <div class="col-12">
+        {% include "components/errors.html" %}
+      </div>
+    </div>
+
+    
+    <div class="row g-4"
+         x-data="ChallengesPage()"
+         @load-challenges.window="loadChallenges()" 
+         @load-challenge.window="loadChallenge($event.detail)">
+      
+      
+      <div x-ref="challengeWindow" id="challenge-window" class="modal fade challenge-modal-container" tabindex="-1" role="dialog" x-data="" x-html="$store.challenge.data.view"></div>
+
+      
+      <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-12 order-lg-0 order-first">
+        <div class="category-sidebar sticky-top" style="top: 90px;">
+          <div class="category-filter-container">
+            
+            <div class="hide-solved-toggle">
+              <label class="toggle-switch">
+                <input type="checkbox" x-model="hideSolved" @change="filterChallenges()">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label">{% trans %}Hide solved challenges{% endtrans %}</span>
+            </div>
+            
+            <div x-show="loaded" class="category-list">
+              <button 
+                class="category-filter-btn w-100 d-flex align-items-center"
+                :class="!selectedCategory ? 'active' : ''"
+                @click="selectedCategory = null"
+              >
+                <i class="fas fa-puzzle-piece category-icon"></i>
+                <span class="category-name flex-grow-1">{% trans %}All{% endtrans %}</span>
+                <span class="category-count" x-text="getTotalChallenges()"></span>
+              </button>
+              
+              
+              <template x-for="(category, idx) in getCategories()" :key="idx">
+                <button 
+                  class="category-filter-btn w-100 d-flex align-items-center"
+                  :class="selectedCategory === category ? 'active' : ''"
+                  @click="selectedCategory = category"
+                >
+                  <i class="category-icon" :class="getCategoryIcon(category)"></i>
+                  <span class="category-name flex-grow-1" x-text="category"></span>
+                  <span class="category-count" x-text="getSortedChallenges(category).length"></span>
+                </button>
+              </template>
+            </div>
+            
+            
+            <div x-show="!loaded" class="text-center py-4">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-xxl-7 col-xl-7 col-lg-6 col-md-6 col-12">
+        <div class="challenges-main">
+          
+          <div x-show="!loaded" class="text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted">{% trans %}Loading challenges...{% endtrans %}</p>
+          </div>
+
+          
+          <div x-show="loaded">
+            <template x-for="(category, idx) in getFilteredCategories()" :key="idx">
+              <div class="challenge-category mb-4" x-show="!selectedCategory || selectedCategory === category">
+                
+                <div x-show="!selectedCategory" class="category-header-card mb-3 p-3 rounded-3">
+                  <div class="d-flex align-items-center">
+                    <div class="category-icon me-3" :style="'color: ' + getCategoryColor(category)">
+                      <i :class="getCategoryIcon(category)" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                      <h5 class="mb-1 fw-bold" x-text="category"></h5>
+                      <small class="text-muted">
+                        <span x-text="getSortedChallenges(category).length"></span> {% trans %}challenges{% endtrans %}
+                        · <span x-text="getSortedChallenges(category).filter(c => c.solved_by_me).length"></span> {% trans %}solved{% endtrans %}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                
+                <div class="row g-3">
+                  <template x-for="(c, challengeIdx) in getVisibleChallenges(category)" :key="c.id">
+                    <div class="col-12 col-sm-6 col-lg-6 col-xl-4">
+                      <div 
+                        class="challenge-card-matrix h-100"
+                        :class="[
+                          c.solved_by_me ? 'is-solved' : '',
+                          'category-' + c.category.toLowerCase().replace(/[^a-z0-9]/g, '')
+                        ]"
+                        :data-category="c.category"
+                        @click="loadChallenge(c.id)"
+                      >
+                        
+                        <div class="matrix-rain" x-data="MatrixRain()">
+                          <template x-for="(col, i) in columns" :key="i">
+                            <div class="matrix-column" 
+                              :style="`--delay: ${col.delay}s; --left: ${col.left}%; --speed: ${col.speed}s;`">
+                            </div>
+                          </template>
+                        </div>
+                        
+                        
+                        <div class="card-content">
+                          
+                          <template x-if="c.solved_by_me">
+                            <div class="solved-state">
+                              <div class="solved-badge-large">
+                                <i class="fas fa-check-circle"></i>
+                                <span>SOLVED</span>
+                              </div>
+                              <h3 class="challenge-name solved-name" x-text="c.name"></h3>
+                              <div class="solved-info">
+                                <span class="solved-points">
+                                  <i class="fas fa-trophy"></i>
+                                  +<span x-text="c.value"></span> pts earned
+                                </span>
+                              </div>
+                            </div>
+                          </template>
+                          
+                          
+                          <template x-if="!c.solved_by_me">
+                            <div class="unsolved-state">
+                              
+                              <h3 class="challenge-name" x-text="c.name"></h3>
+                              
+                              
+                              <div class="accent-line"></div>
+                              
+                              
+                              <div class="stats-row">
+                                <div class="points">
+                                  <span class="value" x-text="c.value"></span>
+                                  <span class="label">pts</span>
+                                </div>
+                                <div class="solves">
+                                  <span class="value" x-text="c.solves || 0"></span>
+                                  <span class="label">SOLVES</span>
+                                </div>
+                              </div>
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-12">
+        <div class="user-sidebar sticky-top" style="top: 90px;">
+          
+          <div class="user-activity-card" x-data="UserActivityCard()" x-init="init()">
+            
+            
+            <div class="user-header-section">
+              <div class="user-avatar" x-data="ImageFallbackState()">
+                <img 
+                  src="https://api.dicebear.com/9.x/identicon/svg?seed={{ ((User.team.captain.email if User.team_id and User.team and User.team.captain and User.team.captain.email else User.email)) | urlencode }}&size=96"
+                  alt="{{ User.name }}"
+                  @error="hasError = true"
+                  x-show="!hasError"
+                  class="avatar-img"
+                >
+                <span x-show="hasError" x-cloak>{{ User.name[0] | upper }}</span>
+              </div>
+              <div class="user-name">{{ User.name }}</div>
+              <div class="live-indicator" title="Auto-refreshing every 15 seconds">
+                <span class="live-dot"></span>
+                <span class="live-text">LIVE</span>
+              </div>
+            </div>
+            
+            
+            <div class="user-stats-row">
+              <div class="stat-item">
+                <div class="stat-value" x-text="solvedCount">0</div>
+                <div class="stat-label">{% trans %}Total{% endtrans %}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" x-text="userScore">{{ User.score }}</div>
+                <div class="stat-label">{% trans %}Points{% endtrans %}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" x-text="userRank">{{ User.place or '-' }}</div>
+                <div class="stat-label">{% trans %}Solved{% endtrans %}</div>
+              </div>
+            </div>
+            
+            
+            <div class="user-progress">
+              <div class="progress-bar-fill" 
+                   :style="{ width: totalChallenges > 0 ? ((solvedCount / totalChallenges) * 100) + '%' : '0%' }">
+              </div>
+            </div>
+            
+            
+            <div class="progress-info">
+              <a href="{{ url_for('views.settings') }}" class="progress-link" title="{% trans %}Settings{% endtrans %}">
+                <i class="fas fa-cog"></i>
+              </a>
+              <span class="progress-text">
+                <span x-text="solvedCount">0</span> / <span x-text="totalChallenges">0</span>
+              </span>
+              <button class="progress-link" title="{% trans %}View{% endtrans %}">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            
+            
+            <div class="activity-tabs">
+              <button class="activity-tab" :class="activeTab === 'all' ? 'active' : ''" @click="activeTab = 'all'">
+                {% trans %}All{% endtrans %}
+              </button>
+              <button class="activity-tab" :class="activeTab === 'notifications' ? 'active' : ''" @click="activeTab = 'notifications'">
+                {% trans %}Notifications{% endtrans %}
+              </button>
+              <button class="activity-tab" :class="activeTab === 'challenges' ? 'active' : ''" @click="activeTab = 'challenges'">
+                {% trans %}Challenge{% endtrans %}
+              </button>
+              
+              <div class="activity-refresh-indicator" x-show="isRefreshing" x-cloak>
+                <i class="fas fa-sync-alt"></i>
+                <span>Live</span>
+              </div>
+              
+              <button class="activity-tab ms-auto" @click="checkForUpdates()" :disabled="isRefreshing" title="Refresh">
+                <i class="fas fa-sync-alt" :class="isRefreshing ? 'fa-spin' : ''"></i>
+              </button>
+            </div>
+            
+            
+            <div class="activity-list">
+              <template x-if="getFilteredActivities().length === 0">
+                <div class="no-activity">
+                  <i class="fas fa-inbox"></i>
+                  <p>{% trans %}Không có thông báo{% endtrans %}</p>
+                </div>
+              </template>
+              
+              <template x-for="activity in getFilteredActivities()" :key="activity.id">
+                <div class="activity-item-new">
+                  
+                  <div class="activity-icon-wrapper" :class="activity.type">
+                    <template x-if="activity.type === 'hint'">
+                      <i class="fas fa-lightbulb"></i>
+                    </template>
+                    <template x-if="activity.type === 'first_blood'">
+                      <span class="blood-hexagon blood-hexagon-gold"></span>
+                    </template>
+                    <template x-if="activity.type === 'second_blood'">
+                      <span class="blood-hexagon blood-hexagon-silver"></span>
+                    </template>
+                    <template x-if="activity.type === 'third_blood'">
+                      <span class="blood-hexagon blood-hexagon-bronze"></span>
+                    </template>
+                    <template x-if="activity.type === 'new_challenge'">
+                      <i class="fas fa-plus"></i>
+                    </template>
+                    <template x-if="activity.type === 'solve'">
+                      <span class="solve-check"><i class="fas fa-check"></i></span>
+                    </template>
+                    <template x-if="!['hint', 'first_blood', 'second_blood', 'third_blood', 'new_challenge', 'solve'].includes(activity.type)">
+                      <i class="fas fa-bell"></i>
+                    </template>
+                  </div>
+                  
+                  
+                  <div class="activity-content-new">
+                    <div class="activity-date" x-text="activity.date"></div>
+                    <div class="activity-message" x-html="activity.message"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  
+  {{ Assets.js("assets/js/challenges.js") }}
+{% endblock %}

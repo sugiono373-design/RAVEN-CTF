@@ -1,0 +1,221 @@
+<div :class="getStyles()" class="modal-dialog modal-xl " role="document" x-data="Challenge" x-init="id = {{ challenge.id }}; ">
+  <div class="modal-content custom-modal-content">
+    <div class="custom-modal-header gap-2">
+      <ul class="nav nav-tabs w-100 custom-ul-nav-tabs-override">
+        <li class="nav-item">
+          <button class="active custom-challenge-button" id="challenge-tab" data-bs-toggle="tab" data-bs-target="#challenge" role="tab" @click="showChallenge()">
+            <span class="fa fa-play"></span> Challenge Info
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="custom-solves-button" id="solves-tab" data-bs-toggle="tab" data-bs-target="#solves" role="tab" @click="showSolves()">
+            <span class="fa fa-user"></span> Solves
+          </button>
+        </li>
+        <li class="ms-auto">
+          <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content"> 
+      <div role="tabpanel" class="tab-pane fade show active" id="challenge">
+        <div  class="modal-body py-4 px-4 px-sm-5">
+          <div>
+        <div class="">
+          <div class="row">
+            <div class="">
+              <div class=""custom-challenge-header>
+                <h2 class="challenge-name pt-3 text-center">{{ challenge.name }}</h2>
+                <h4 class="text-center challenge-value">
+                  {{ challenge.value }} points
+                </h4>
+                <h4 class="text-center">
+                  {{ ngettext("%(num)d solve", "%(num)d solves", solves) }}
+                </h4>
+              </div>
+
+              <div id="challenge-description" class="d-flex gap-2">
+                <h3>Description</h3>
+              </div>
+              <hr>
+              <span class="challenge-desc">{% block description %}{{ challenge.html }}{% endblock %}</span>
+
+              {% if challenge.connection_info or challenge.connection_format or challenge.type=='kubectf'%}
+              <div id="challenge-connection-info" class="d-flex gap-2">
+                <h3>Connection Info</h3>
+              </div>
+              <hr>
+              <div class="mb-2">
+                <span class="challenge-connection-info">
+                  {% block connection_info %}
+                    {% set conn = challenge.connection_info %}
+                    {% if not conn %}
+                    {% elif conn.startswith("http") %}
+                      {{ conn | urlize(target="_blank") }}
+                    {% else %}
+                      <code>{{ conn }}</code>
+                    {% endif %}
+                  {% endblock %}
+                </span>
+              </div>
+              {% endif %}
+
+              {% if hints %}
+              <div id="challenge-hints" class="d-flex gap-2">
+                <h3>Hints</h3>
+              </div>
+              <hr>
+              <div class="challenge-hints hint-row row">
+                <div class="col-12 mb-3">
+                  {% for hint in hints | sort(attribute="cost") %}
+                  <div x-data="Hint" x-init="id = {{ hint.id }}">
+                    {% if hint.content %}
+                    <details>
+                      <summary>{% trans %}View Hint{% endtrans %}</summary>
+                      <div>{{ hint.html | safe }}</div>
+                    </details>
+                    {% else %}
+                    <details @toggle="showHint(event)">
+                      <summary>Unlock Hint for {{ hint.cost }} point{{ hint.cost|pluralize }}</summary>
+                      <div x-html="html"></div>
+                    </details>
+                    {% endif %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+
+              {% if files %}
+              <div id="challenge-files" class="d-flex gap-2">
+                <h3>Files</h3>
+              </div>
+              <hr>
+              <div class="row challenge-files text-center pb-3">
+                {% for file in files %}
+                <div class="col-md-4 col-sm-4 col-xs-12 file-button-wrapper d-block">
+                  {% set segments = file.split('/') %}
+                  {% set token = file.split('?') | last %}
+                  {% if token %}
+                  {% set filename = segments | last | replace("?" + token, "") %}
+                  {% else %}
+                  {% set filename = segments | last %}
+                  {% endif %}
+                  <a
+                    class="btn btn-info btn-file mb-1 d-inline-block px-2 w-100 text-truncate"
+                    href="{{ file }}"
+                    title="{{ filename }}"
+                  >
+                    <i class="fas fa-download"></i>
+                    <small>
+                      {{ filename }}
+                    </small>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              {% if max_attempts > 0 %}
+              <div class="row text-center">
+                <div class="col-12">
+                  <p>
+                    {{ attempts }}/{{ max_attempts }} attempt{{ max_attempts|pluralize }}
+                  </p>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="custom-modal-footer d-flex flex-column">
+      <div class="d-flex flex-row w-100 gap-2 justify-content-center">
+
+        <div class="custom-challenge-id">
+          {% block input %}
+          <input
+            id="challenge-id" class="challenge-id" type="hidden"
+            value="{{ challenge.id }}"
+          >
+          <input
+            id="challenge-input" class="challenge-input form-control"
+            type="text" name="submission"
+            @keyup.enter="submitChallenge()"
+            placeholder="{% trans %}Flag{% endtrans %}" x-model="submission"
+          >
+          {% endblock %}
+        </div>
+
+        <div class="w-25">
+          {% block submit %}
+          <button
+            id="challenge-submit"
+            class="challenge-submit btn btn-outline-primary w-100 h-100" type="submit"
+            @click.debounce.500ms="submitChallenge()"
+          >
+            {% trans %}
+            <span class="fa fa-gamepad"></span>
+            {% endtrans %}
+          </button>
+          {% endblock %}
+        </div>
+        </div>
+        <div class="row notification-row">
+          <div class="col-12">
+            <template x-if="response">
+              {# This alert is re-used for all alerts, so it's important not to make it dismissible #}
+              <div class="alert text-center w-100 mt-3"
+                  :class="{
+                    'alert-success': response.data.status == 'correct',
+                    'alert-info': response.data.status == 'already_solved',
+                    'alert-danger': response.data.status == 'incorrect',
+                    'alert-warning': response.data.status == 'paused',
+                  }" role="alert"
+              >
+                <strong x-text="response.data.message"></strong>
+                <div x-show="(response.data.status == 'correct' || response.data.status == 'already_solved')">
+
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="solves">
+        <div  class="modal-body py-4 px-4 px-sm-5">
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>
+                    <b>{% trans %}Name{% endtrans %}</b>
+                  </td>
+                  <td>
+                    <b>{% trans %}Date{% endtrans %}</b>
+                  </td>
+                </tr>
+              </thead>
+              <tbody id="challenge-solves-names">
+                <template x-for="solve in solves">
+                  <tr>
+                    <td>
+                      <a :href="solve.account_url" x-text="solve.name"></a>
+                    </td>
+                    <td x-text="solve.date"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

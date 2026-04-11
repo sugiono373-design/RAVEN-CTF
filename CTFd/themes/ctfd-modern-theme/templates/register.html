@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  {{ super() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  
+  <div class="auth-branding">
+    <div class="branding-content">
+      
+      <div class="brand-logo">
+        <img src="{{ url_for('views.themes', path='img/logo.png') }}" alt="Logo" style="width: 50%; height: 50%; object-fit: contain;">
+      </div>
+      
+      
+      <h1 class="brand-title">
+        {% trans %}Join the community{% endtrans %}<br>{% trans %}of elite hackers.{% endtrans %}
+      </h1>
+      
+      <p class="brand-subtitle">
+        {% trans %}Create your account and start your journey in the world of cybersecurity challenges!{% endtrans %}
+      </p>
+    </div>
+    
+    
+    <div class="brand-wave"></div>
+  </div>
+  
+  
+  <div class="auth-form-section">
+    <div class="auth-form-container">
+      <h2 class="form-title">{% trans %}Create Account{% endtrans %}</h2>
+      
+      {% include "components/errors.html" %}
+      
+      {% if integrations.mlc() %}
+        <a class="oauth-btn" href="{{ url_for('auth.oauth_login') }}">
+          <i class="fas fa-shield-alt"></i>
+          {% trans %}Register with Major League Cyber{% endtrans %}
+        </a>
+        <div class="divider">
+          <span>{% trans %}or{% endtrans %}</span>
+        </div>
+      {% endif %}
+      
+      {% with form = Forms.auth.RegistrationForm() %}
+      {% from "macros/forms.html" import render_extra_fields %}
+      
+      <form method="post" accept-charset="utf-8" autocomplete="off" role="form" class="auth-form">
+        <div class="form-group">
+          <input 
+            type="text" 
+            name="name" 
+            class="form-input" 
+            placeholder="{% trans %}Username{% endtrans %}"
+            value="{{ name or '' }}"
+            required
+          >
+          <span class="input-hint">{% trans %}Your username on the site{% endtrans %}</span>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="email" 
+            name="email" 
+            class="form-input" 
+            placeholder="{% trans %}Email Address{% endtrans %}"
+            value="{{ email or '' }}"
+            required
+          >
+          <span class="input-hint">{% trans %}Never shown to the public{% endtrans %}</span>
+        </div>
+        
+        <div class="form-group">
+          <input 
+            type="password" 
+            name="password" 
+            class="form-input" 
+            placeholder="{% trans %}Password{% endtrans %}"
+            required
+          >
+          <span class="input-hint">{% trans %}Password used to log into your account{% endtrans %}</span>
+        </div>
+        
+        {% if form.country is defined %}
+        <div class="form-group">
+          <select name="country" class="form-input form-select">
+            <option value="" disabled selected>{% trans %}Select your country{% endtrans %}</option>
+            {{ form.country }}
+          </select>
+        </div>
+        {% endif %}
+        
+        {{ form.nonce() }}
+        {{ render_extra_fields(form.extra) }}
+        
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary-action">
+            <i class="fas fa-user-plus"></i>
+            {% trans %}Register{% endtrans %}
+          </button>
+        </div>
+        
+        <div class="form-footer">
+          <span>{% trans %}Already have an account?{% endtrans %}</span>
+          <a href="{{ url_for('auth.login') }}" class="link-action">
+            {% trans %}Sign In{% endtrans %}
+          </a>
+        </div>
+        
+        {% if Configs.tos_or_privacy %}
+        <div class="legal-text">
+          {% trans trimmed privacy_link=Configs.privacy_link, tos_link=Configs.tos_link %}
+          By registering, you agree to the
+          <a href="{{ privacy_link }}" target="_blank" rel="noopener noreferrer">privacy policy</a>
+          and <a href="{{ tos_link }}" target="_blank" rel="noopener noreferrer">terms of service</a>
+          {% endtrans %}
+        </div>
+        {% endif %}
+      </form>
+      {% endwith %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

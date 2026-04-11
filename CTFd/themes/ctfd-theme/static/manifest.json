@@ -1,0 +1,146 @@
+{
+  "assets/js/index.js": {
+    "file": "assets/index.js",
+    "src": "assets/js/index.js",
+    "isEntry": true
+  },
+  "assets/js/page.js": {
+    "file": "assets/page.js",
+    "src": "assets/js/page.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/setup.js": {
+    "file": "assets/setup.js",
+    "src": "assets/js/setup.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/settings.js": {
+    "file": "assets/settings.js",
+    "src": "assets/js/settings.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_clipboard.js"
+    ]
+  },
+  "assets/js/challenges.js": {
+    "file": "assets/challenges.js",
+    "src": "assets/js/challenges.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/scoreboard.js": {
+    "file": "assets/scoreboard.js",
+    "src": "assets/js/scoreboard.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_index2.js",
+      "_echarts.js"
+    ]
+  },
+  "assets/js/notifications.js": {
+    "file": "assets/notifications.js",
+    "src": "assets/js/notifications.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/teams/public.js": {
+    "file": "assets/teams_public.js",
+    "src": "assets/js/teams/public.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_userscore.js",
+      "_index2.js",
+      "_echarts.js"
+    ]
+  },
+  "assets/js/teams/private.js": {
+    "file": "assets/teams_private.js",
+    "src": "assets/js/teams/private.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_clipboard.js",
+      "_userscore.js",
+      "_index2.js",
+      "_echarts.js"
+    ]
+  },
+  "assets/js/teams/list.js": {
+    "file": "assets/teams_list.js",
+    "src": "assets/js/teams/list.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "assets/js/users/public.js": {
+    "file": "assets/users_public.js",
+    "src": "assets/js/users/public.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_userscore.js",
+      "_index2.js",
+      "_echarts.js"
+    ]
+  },
+  "assets/js/users/private.js": {
+    "file": "assets/users_private.js",
+    "src": "assets/js/users/private.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js",
+      "_userscore.js",
+      "_index2.js",
+      "_echarts.js"
+    ]
+  },
+  "assets/js/users/list.js": {
+    "file": "assets/users_list.js",
+    "src": "assets/js/users/list.js",
+    "isEntry": true,
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "_echarts.js": {
+    "file": "assets/echarts.js"
+  },
+  "_clipboard.js": {
+    "file": "assets/clipboard.js",
+    "imports": [
+      "assets/js/index.js"
+    ]
+  },
+  "_index2.js": {
+    "file": "assets/index2.js",
+    "imports": [
+      "_echarts.js"
+    ]
+  },
+  "_userscore.js": {
+    "file": "assets/userscore.js",
+    "imports": [
+      "assets/js/index.js",
+      "_index2.js"
+    ]
+  },
+  "assets/scss/main.scss": {
+    "file": "assets/main.css",
+    "src": "assets/scss/main.scss",
+    "isEntry": true
+  }
+}

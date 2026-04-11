@@ -1,0 +1,262 @@
+<div :class="getStyles()" role="document" x-data="Challenge" x-init="id = {{ challenge.id }}">
+  <div class="modal-content challenge-modal" 
+       data-category="{{ challenge.category }}"
+       :class="{ 
+         'submit-pending': isSubmitting,
+         'submit-correct': submitResult === 'correct',
+         'submit-already': submitResult === 'already',
+         'submit-incorrect': submitResult === 'incorrect'
+       }">
+    
+    
+    <div class="challenge-modal-header">
+      <div class="challenge-header-content">
+        
+        <div class="challenge-category-badge">
+          <span class="category-icon">
+            {% set cat = challenge.category | lower %}
+            {% if 'pwn' in cat %}
+              <i class="fas fa-bug"></i>
+            {% elif 'web' in cat %}
+              <i class="fas fa-globe"></i>
+            {% elif 'crypto' in cat %}
+              <i class="fas fa-key"></i>
+            {% elif 'reverse' in cat or 're' == cat %}
+              <i class="fas fa-microchip"></i>
+            {% elif 'forensic' in cat %}
+              <i class="fas fa-search"></i>
+            {% elif 'misc' in cat %}
+              <i class="fas fa-puzzle-piece"></i>
+            {% elif 'osint' in cat %}
+              <i class="fas fa-binoculars"></i>
+            {% elif 'stego' in cat %}
+              <i class="fas fa-image"></i>
+            {% elif 'hardware' in cat %}
+              <i class="fas fa-memory"></i>
+            {% elif 'mobile' in cat %}
+              <i class="fas fa-mobile-alt"></i>
+            {% elif 'blockchain' in cat %}
+              <i class="fab fa-bitcoin"></i>
+            {% else %}
+              <i class="fas fa-flag"></i>
+            {% endif %}
+          </span>
+        </div>
+        
+        
+        <div class="challenge-points-display">
+          <span class="points-value">{{ challenge.value }}</span>
+          <span class="points-label">pts</span>
+        </div>
+      </div>
+      
+      
+      <button type="button" class="challenge-close-btn" data-bs-dismiss="modal" aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    
+    <div class="challenge-accent-line"></div>
+
+    
+    <div class="challenge-modal-body">
+      
+      <h2 class="challenge-title">{{ challenge.name }}</h2>
+      
+      
+      {% if tags %}
+      <div class="challenge-tags-row">
+        {% for tag in tags %}
+          <span class="challenge-tag-minimal">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <div class="challenge-description">
+        {% block description %}{{ challenge.html }}{% endblock %}
+      </div>
+      
+      
+      {% if challenge.connection_info %}
+      <div class="challenge-connection">
+        <div class="connection-label">
+          <i class="fas fa-terminal"></i>
+          <span>Connection</span>
+        </div>
+        <div class="connection-value">
+          {% block connection_info %}
+            {% set conn = challenge.connection_info %}
+            {% if not conn %}
+            {% elif conn.startswith("http") %}
+              <a href="{{ conn }}" target="_blank" rel="noopener noreferrer">{{ conn }}</a>
+            {% else %}
+              <code>{{ conn }}</code>
+            {% endif %}
+          {% endblock %}
+        </div>
+      </div>
+      {% endif %}
+      
+      
+      {% if files %}
+      <div class="challenge-files-section">
+        <div class="files-label">
+          <i class="fas fa-file-download"></i>
+          <span>Files</span>
+        </div>
+        <div class="files-list">
+          {% for file in files %}
+            {% set segments = file.split('/') %}
+            {% set token = file.split('?') | last %}
+            {% if token %}
+              {% set filename = segments | last | replace("?" + token, "") %}
+            {% else %}
+              {% set filename = segments | last %}
+            {% endif %}
+            <a class="file-download-btn" href="{{ file }}" title="{{ filename }}">
+              <i class="fas fa-download"></i>
+              <span>{{ filename }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+      
+      {% if hints %}
+      <div class="challenge-hints-section">
+        <div class="hints-label">
+          <i class="fas fa-lightbulb"></i>
+          <span>Hints</span>
+        </div>
+        {% for hint in hints | sort(attribute="cost") %}
+          <div x-data="Hint" x-init="id = {{ hint.id }}" class="hint-item">
+            {% if hint.content %}
+            <details class="hint-details">
+              <summary class="hint-summary">
+                <i class="fas fa-eye"></i>
+                {% trans %}View Hint{% endtrans %}
+              </summary>
+              <div class="hint-content">{{ hint.html | safe }}</div>
+            </details>
+            {% else %}
+            <details @toggle="showHint(event)" class="hint-details locked">
+              <summary class="hint-summary">
+                <i class="fas fa-lock"></i>
+                Unlock for {{ hint.cost }} point{{ hint.cost|pluralize }}
+              </summary>
+              <div class="hint-content" x-html="html"></div>
+            </details>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      {% if max_attempts > 0 %}
+      <div class="challenge-attempts">
+        <span class="attempts-count">{{ attempts }}/{{ max_attempts }}</span>
+        <span class="attempts-label">attempts</span>
+      </div>
+      {% endif %}
+    </div>
+    
+    
+    <div class="challenge-submit-section">
+      {% block input %}
+        <input id="challenge-id" class="challenge-id" type="hidden" value="{{ challenge.id }}">
+        <div class="submit-input-wrapper" :class="{ 'has-value': submission.length > 0 }">
+          <input
+            id="challenge-input"
+            class="challenge-input-minimal"
+            type="text"
+            name="submission"
+            @keyup.enter="submitChallengeWithEffect()"
+            placeholder="{% if solved %}{% trans %}This challenge has been solved{% endtrans %}{% else %}{% trans %}Enter flag here...{% endtrans %}{% endif %}"
+            x-model="submission"
+            :disabled="isSubmitting"
+          >
+          <div class="input-border-effect"></div>
+        </div>
+      {% endblock %}
+      
+      {% block submit %}
+        <button
+          id="challenge-submit"
+          class="challenge-submit-btn"
+          type="submit"
+          @click.debounce.500ms="submitChallengeWithEffect()"
+          :disabled="isSubmitting || submission.length === 0"
+        >
+          <span x-show="!isSubmitting">{% trans %}Submit Flag{% endtrans %}</span>
+          <span x-show="isSubmitting" class="submit-spinner">
+            <i class="fas fa-circle-notch fa-spin"></i>
+          </span>
+        </button>
+      {% endblock %}
+    </div>
+    
+    
+    <div class="challenge-response-section">
+      <template x-if="response">
+        <div class="response-message"
+             :class="{
+               'response-correct': response.data.status == 'correct',
+               'response-already': response.data.status == 'already_solved',
+               'response-incorrect': response.data.status == 'incorrect',
+             }">
+          <div class="response-icon">
+            <i x-show="response.data.status == 'correct'" class="fas fa-check-circle"></i>
+            <i x-show="response.data.status == 'already_solved'" class="fas fa-info-circle"></i>
+            <i x-show="response.data.status == 'incorrect'" class="fas fa-times-circle"></i>
+          </div>
+          <span class="response-text" x-text="response.data.message"></span>
+          
+          <div x-show="(response.data.status == 'correct' || response.data.status == 'already_solved')" class="response-actions">
+            <button x-show="getNextId()" @click="nextChallenge()" class="next-challenge-btn">
+              <i class="fas fa-arrow-right"></i>
+              {% trans %}Next Challenge{% endtrans %}
+            </button>
+          </div>
+        </div>
+      </template>
+    </div>
+    
+    
+    <div class="challenge-solves-section" x-show="showSolvesTab" x-cloak>
+      <div class="solves-header">
+        <h4>
+          <i class="fas fa-users"></i>
+          {% block solves %}
+            {% if solves != None %}
+              {{ ngettext("%(num)d Solve", "%(num)d Solves", solves) }}
+            {% endif %}
+          {% endblock %}
+        </h4>
+        <button @click="showSolvesTab = false" class="solves-close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="solves-list">
+        <template x-for="solve in solves">
+          <div class="solve-item">
+            <a :href="solve.account_url" x-text="solve.name" class="solve-name"></a>
+            <span x-text="solve.date" class="solve-date"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+    
+    
+    <div class="challenge-modal-footer">
+      <button class="solves-toggle-btn" @click="toggleSolves()">
+        <i class="fas fa-trophy"></i>
+        <span>{% if solves != None %}{{ solves }} {% trans %}Solves{% endtrans %}{% endif %}</span>
+      </button>
+    </div>
+  </div>
+</div>
+

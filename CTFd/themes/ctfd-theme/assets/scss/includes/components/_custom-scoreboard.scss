@@ -1,0 +1,52 @@
+/* _custom-scoreboard.scss */
+.custom-button.active {
+  border-style: outset;
+}
+
+.custom-button{
+  border-style: hidden;
+  border-color: var(--bs-nav-link-color);
+  background-color: transparent;
+  color: inherit;
+  border-width: 5px;
+  margin-left : 1rem;
+  margin-right : 1rem;
+  border-radius: 0.5rem;
+  width : 80%;
+}
+
+
+.custom-scoreboard-container {
+  display: flex;
+  flex-direction: row;
+  margin : 0 auto;
+  margin-top: 5rem;
+  @media only screen and (max-width: 1200px){
+    flex-direction: column;
+  }
+}
+
+.custom-scoreboard-graph {
+  width: 50vw;
+  height: 50vh;
+  margin : 0 auto;
+  @media only screen and (max-width: 1200px){
+    width: 90vw;
+    flex-direction: column;
+  }
+}
+.custom-scoreboard-board {
+  margin : 0 auto;
+  margin-left : 0;
+  width: 30vw;
+  @media only screen and (max-width: 1200px){
+    width: 80vw;
+  }
+}
+
+.custom-scoreboard-board-brackets{
+  flex-direction: row;
+  height : fit-content;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+}
